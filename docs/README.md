@@ -1,6 +1,6 @@
-# mganske/course-2026-project: Documentation
+# mganske/computational-workflows-project: Documentation
 
-The mganske/course-2026-project documentation is split into the following pages:
+The mganske/computational-workflows-project documentation is split into the following pages:
 
 - [Usage](usage.md)
   - An overview of how the pipeline works, how to run it and a description of all of the different command-line flags.

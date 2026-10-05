@@ -1,4 +1,4 @@
-# mganske/course-2026-project: Output
+# mganske/computational-workflows-project: Output
 
 ## Introduction
 

@@ -1,6 +1,6 @@
 {
-    "name": "mganske/course-2026-project",
-    "homePage": "https://github.com/mganske/course-2026-project",
+    "name": "mganske/computational-workflows-project",
+    "homePage": "https://github.com/mganske/computational-workflows-project",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

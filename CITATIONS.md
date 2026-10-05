@@ -1,4 +1,4 @@
-# mganske/course-2026-project: Citations
+# mganske/computational-workflows-project: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 

@@ -9,12 +9,12 @@ Content-Type: text/html; charset=utf-8
 $email_html
 
 --nfcoremimeboundary
-Content-Type: image/png;name="mganske-course-2026-project_logo.png"
+Content-Type: image/png;name="mganske-computational-workflows-project_logo.png"
 Content-Transfer-Encoding: base64
 Content-ID: <nfcorepipelinelogo>
-Content-Disposition: inline; filename="mganske-course-2026-project_logo_light.png"
+Content-Disposition: inline; filename="mganske-computational-workflows-project_logo_light.png"
 
-<% out << new File("$projectDir/assets/mganske-course-2026-project_logo_light.png").
+<% out << new File("$projectDir/assets/mganske-computational-workflows-project_logo_light.png").
     bytes.
     encodeBase64().
     toString().

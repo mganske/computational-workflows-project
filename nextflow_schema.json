@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/mganske/course-2026-project/main/nextflow_schema.json",
-    "title": "mganske/course-2026-project pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/mganske/computational-workflows-project/main/nextflow_schema.json",
+    "title": "mganske/computational-workflows-project pipeline parameters",
     "description": "Pipeline for the course "Computational Workflows" Summer Semester 2026",
     "type": "object",
     "$defs": {

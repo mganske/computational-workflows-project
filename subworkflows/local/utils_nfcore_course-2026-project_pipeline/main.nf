@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the mganske/course-2026-project pipeline
+// Subworkflow with functionality specific to the mganske/computational-workflows-project pipeline
 //
 
 /*
