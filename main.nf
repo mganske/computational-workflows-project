@@ -13,7 +13,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { COMPUTATIONAL-WORKFLOWS-PROJECT  } from './workflows/computational-workflows-project'
+include { COMPUTATIONAL_WORKFLOWS_PROJECT  } from './workflows/computational-workflows-project'
 include { PIPELINE_INITIALISATION          } from './subworkflows/local/utils_nfcore_computational-workflows-project_pipeline'
 include { PIPELINE_COMPLETION              } from './subworkflows/local/utils_nfcore_computational-workflows-project_pipeline'
 include { getGenomeAttribute               } from './subworkflows/local/utils_nfcore_computational-workflows-project_pipeline'
@@ -38,7 +38,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow MGANSKE_COURSE-2026-PROJECT {
+workflow MGANSKE_COMPUTATIONAL_WORKFLOWS_PROJECT {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -48,7 +48,7 @@ workflow MGANSKE_COURSE-2026-PROJECT {
     //
     // WORKFLOW: Run pipeline
     //
-    COURSE-2026-PROJECT (
+    COMPUTATIONAL_WORKFLOWS_PROJECT (
         samplesheet,
         params.multiqc_config,
         params.multiqc_logo,
@@ -56,7 +56,7 @@ workflow MGANSKE_COURSE-2026-PROJECT {
         params.outdir,
     )
     emit:
-    multiqc_report = COURSE-2026-PROJECT.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = COMPUTATIONAL_WORKFLOWS_PROJECT.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,7 +85,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    MGANSKE_COURSE-2026-PROJECT (
+    MGANSKE_COMPUTATIONAL_WORKFLOWS_PROJECT (
         PIPELINE_INITIALISATION.out.samplesheet
     )
     //
@@ -97,7 +97,7 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        MGANSKE_COURSE-2026-PROJECT.out.multiqc_report
+        MGANSKE_COMPUTATIONAL_WORKFLOWS_PROJECT.out.multiqc_report
     )
 }
 
