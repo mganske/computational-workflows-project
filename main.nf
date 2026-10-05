@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    mganske/computational-workflows-project
+    mganske/course-2026-project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/mganske/computational-workflows-project
+    Github : https://github.com/mganske/course-2026-project
 ----------------------------------------------------------------------------------------
 */
 
@@ -13,7 +13,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { COURSE-2026-PROJECT  } from './workflows/course-2026-project'
+include { COURSE_2026_PROJECT  } from './workflows/course-2026-project'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_course-2026-project_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_course-2026-project_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_course-2026-project_pipeline'
@@ -38,7 +38,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow MGANSKE_COURSE-2026-PROJECT {
+workflow MGANSKE_COURSE_2026_PROJECT {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -48,7 +48,7 @@ workflow MGANSKE_COURSE-2026-PROJECT {
     //
     // WORKFLOW: Run pipeline
     //
-    COURSE-2026-PROJECT (
+    COURSE_2026_PROJECT (
         samplesheet,
         params.multiqc_config,
         params.multiqc_logo,
@@ -56,7 +56,7 @@ workflow MGANSKE_COURSE-2026-PROJECT {
         params.outdir,
     )
     emit:
-    multiqc_report = COURSE-2026-PROJECT.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = COURSE_2026_PROJECT.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,9 +85,10 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    MGANSKE_COURSE-2026-PROJECT (
+    MGANSKE_COURSE_2026_PROJECT (
         PIPELINE_INITIALISATION.out.samplesheet
     )
+
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -97,7 +98,7 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        MGANSKE_COURSE-2026-PROJECT.out.multiqc_report
+        MGANSKE_COURSE_2026_PROJECT.out.multiqc_report
     )
 }
 

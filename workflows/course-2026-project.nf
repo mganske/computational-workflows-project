@@ -5,6 +5,7 @@
 */
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -16,7 +17,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_cour
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow COURSE-2026-PROJECT {
+workflow COURSE_2026_PROJECT {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
@@ -34,6 +35,14 @@ workflow COURSE-2026-PROJECT {
     //
     FASTQC(ch_samplesheet)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.map{ _meta, file -> file })
+
+    //
+    // MODULE: Run Trim Galore
+    //
+    TRIMGALORE( ch_samplesheet )
+    ch_multiqc_files = ch_multiqc_files.mix(
+        TRIMGALORE.out.log.map { _meta, log -> log }
+    )
 
     //
     // Collate and save software versions

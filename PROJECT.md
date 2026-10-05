@@ -4,6 +4,7 @@ Student1: \
 Marcus Ganske
 
 Student2: \
+Davide Bordiga  \
 
 Project Github url: \
 https://github.com/mganske/computational-workflows-project
