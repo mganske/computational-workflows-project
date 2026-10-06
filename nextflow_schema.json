@@ -2,11 +2,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/mganske/computational-workflows-project/main/nextflow_schema.json",
     "title": "mganske/computational-workflows-project pipeline parameters",
-<<<<<<< HEAD
-    "description": "Pipeline for the course \"Computational Workflows\" Summer Semester 2026",
-=======
     "description": "Pipeline for the course 'Computational Workflows' Summer Semester 2026",
->>>>>>> 6fd033a5342ca23e61e79aaff34a05c7c9490482
     "type": "object",
     "$defs": {
         "input_output_options": {
