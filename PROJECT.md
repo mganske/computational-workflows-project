@@ -12,7 +12,7 @@ https://github.com/mganske/computational-workflows-project
 
 # Next steps
 
-1. [x] Add us to the Project Github ✓
+1. Add us to the Project Github ✓
 2. Work together on the pipeline
 3. Commit+push your work frequently
 4. Write your report and also upload your paper **in PDF format**
