@@ -6,16 +6,16 @@ fastq_dir = Path("data")
 fastq_files = sorted(fastq_dir.glob("*.fastq.gz"))
 
 # build rows matching the schema's expected columns
-data = {"id": [], "fastq_1": [], "fastq_2": []}
+data = {"sample": [], "fastq_1": [], "fastq_2": []}
 
-id = None
+sample = None
 fastq_1 = None
 fastq_2 = None
 
 for file in fastq_files:
-    id = str(file.name).split("_")[0]
-    if id not in data["id"]:
-        data["id"].append(id)
+    sample = str(file.name).split("_")[0]
+    if sample not in data["sample"]:
+        data["sample"].append(sample)
     if str(file.name).split("_")[2].startswith("1"):
         fastq_1 = str(file)
         data["fastq_1"].append(fastq_1)

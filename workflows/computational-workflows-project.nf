@@ -9,7 +9,7 @@ include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_course-2026-project_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_computational-workflows-project_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +17,11 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_cour
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+<<<<<<< HEAD:workflows/course-2026-project.nf
 workflow COURSE_2026_PROJECT {
+=======
+workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
+>>>>>>> 6fd033a5342ca23e61e79aaff34a05c7c9490482:workflows/computational-workflows-project.nf
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
@@ -68,7 +72,7 @@ workflow COURSE_2026_PROJECT {
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
-            name:  'course-2026-project_software_'  + 'mqc_'  + 'versions.yml',
+            name:  'COMPUTATIONAL_WORKFLOWS_project_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
         )
@@ -88,7 +92,7 @@ workflow COURSE_2026_PROJECT {
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
-                [id: 'course-2026-project'],
+                [id: 'COMPUTATIONAL_WORKFLOWS_project'],
                 files,
                 multiqc_config
                     ? file(multiqc_config, checkIfExists: true)
