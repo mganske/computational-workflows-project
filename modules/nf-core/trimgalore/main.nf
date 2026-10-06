@@ -1,6 +1,6 @@
 process TRIMGALORE {
     tag "${meta.id}"
-    label 'process_low'
+    label 'process_medium'
 
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
     ? 'https://depot.galaxyproject.org/singularity/trim-galore:0.6.10--hdfd78af_0'
