@@ -17,11 +17,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_comp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-<<<<<<< HEAD:workflows/course-2026-project.nf
-workflow COURSE_2026_PROJECT {
-=======
 workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
->>>>>>> 6fd033a5342ca23e61e79aaff34a05c7c9490482:workflows/computational-workflows-project.nf
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
