@@ -14,7 +14,7 @@
 
 ## Introduction
 
-**mganske/computational-workflows-project** is a bioinformatics pipeline that ...
+**mganske/computational-workflows-project** is a bioinformatics pipeline that (<>)
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -65,7 +65,7 @@ nextflow run mganske/computational-workflows-project \
 
 ## Credits
 
-mganske/computational-workflows-project was originally written by Marcus Ganske, David Ebordiga.
+mganske/computational-workflows-project was originally written by Marcus Ganske, Davide Bordiga.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
