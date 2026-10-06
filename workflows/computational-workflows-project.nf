@@ -6,6 +6,7 @@
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
+include { HISAT2                 } from '../modules/nf-core/hisat2/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -17,11 +18,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_comp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-<<<<<<< HEAD:workflows/course-2026-project.nf
-workflow COURSE_2026_PROJECT {
-=======
 workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
->>>>>>> 6fd033a5342ca23e61e79aaff34a05c7c9490482:workflows/computational-workflows-project.nf
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
@@ -44,10 +41,17 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     // MODULE: Run Trim Galore
     //
     TRIMGALORE( ch_samplesheet )
-    ch_multiqc_files = ch_multiqc_files.mix(
-        TRIMGALORE.out.log.map { _meta, log -> log }
-    )
+    def ch_se_for_hisat2 = TRIMGALORE.out.reads_se.map { meta, fq -> [meta, fq, null] }
+    def ch_trimmed_reads = TRIMGALORE.out.reads_pe.mix(ch_se_for_hisat2)
 
+    //
+    // MODULE: Run HISAT2
+    //
+    def ch_hisat2_index = Channel.fromPath(
+        "${params.hisat2_index}/*.ht2"
+    )
+    HISAT2( ch_trimmed_reads, file("${params.hisat2_index}").parent, params.hisat2_cores ?: 1 )
+    
     //
     // Collate and save software versions
     //

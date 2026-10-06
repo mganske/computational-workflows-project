@@ -11,6 +11,8 @@ process TRIMGALORE {
 
     output:
     path("*{3prime,5prime,trimmed,val}{,_1,_2}.fq.gz")
+    tuple val(meta), path("${meta.id}_1_val_1.fq.gz"), path("${meta.id}_2_val_2.fq.gz"), emit: reads_pe, optional: true
+    tuple val(meta), path("${meta.id}_trimmed.fq.gz"), emit: reads_se, optional: true
     tuple val(meta), path("*report.txt"), emit: log, optional: true
     //tuple("${task.process}"), val('trimgalore'), eval('trim_galore --version | grep -Eo "[0-9]+(\\.[0-9]+)+"'), emit: versions_trimgalore, topic: versions
 
@@ -21,17 +23,17 @@ process TRIMGALORE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    // core: -3 single-end, -4 paired-end, clamp 1..8
-    def cores = meta.single_end
-    ? Math.max((task.cpus as int) - 3, 1)
-    : Math.max((task.cpus as int) - 4, 1)
-    cores = Math.min(cores, 8)
+    def cores = meta.single_end//conditional definition
+    ? Math.max((task.cpus as int) - 3, 1)//-3 single-end
+    : Math.max((task.cpus as int) - 4, 1)//-4 paired-end
+    cores = Math.min(cores, 8)//limit to 8
     
-    // default single-end
+    //FASTQ names, default single-end
     def fq1 = "${prefix}.fastq.gz"
     def fq2 = ''
     def paired = ''
 
+    //else paired-end
     if (!meta.single_end) {
         fq1 = "${prefix}_1.fastq.gz"
         fq2 = "${prefix}_2.fastq.gz"
@@ -39,9 +41,11 @@ process TRIMGALORE {
     }
 
     """
+    #PE
     if [ -n "${fq2}" ]; then
         [ -f "${fq1}" ] || ln -s ${reads[0]} ${fq1}
         [ -f "${fq2}" ] || ln -s ${reads[1]} ${fq2}
+    #SE
     else
         [ -f "${fq1}" ] || ln -s ${reads[0]} ${fq1}
     fi
