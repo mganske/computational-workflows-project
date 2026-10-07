@@ -26,12 +26,16 @@ process HISAT2 {
     def args = task.ext.args ?: ''
     def index_base = "${index_dir}/${params.hisat2_index.tokenize('/')[-1]}"
     def read_arg = meta.single_end ? "-U ${fq1}" : "-1 ${fq1} -2 ${fq2}" //choiche based on flag
+    def extra = meta.single_end ? '' : '--no-mixed --no-discordant'
 
     """
     hisat2 -p ${cores} \\
         ${args} \\
         -x ${index_base} \\
         ${read_arg} \\
+        --rna-strandness RF \\
+        ${extra} \\
+        --dta \\
         -S ${meta.id}.sam \\
         2> ${meta.id}.log
     """

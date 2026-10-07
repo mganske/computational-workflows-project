@@ -11,6 +11,7 @@ process STRING_TIE {
     output:
     tuple val(meta), path("${meta.id}_stringtie.gtf"), emit: gtf
     tuple val(meta), path("${meta.id}_abundance.tsv"), emit: tpm
+    path "${meta.id}_ballgown", emit: ballgown
 
     when:
     task.ext.when == null || task.ext.when
@@ -19,7 +20,8 @@ process STRING_TIE {
     def args = task.ext.args ?: ''
     """
     /opt/conda/bin/stringtie ${sorted_bam} \\
-        -G ${gtf} \\
+        -e -G ${gtf} \\
+        -b ${meta.id}_ballgown \\
         -o ${meta.id}_stringtie.gtf \\
         -A ${meta.id}_abundance.tsv \\
         -p ${task.cpus ?: 1} \\
