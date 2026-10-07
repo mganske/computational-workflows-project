@@ -6,6 +6,8 @@
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
+include { SALMON_INDEX           } from '../modules/nf-core/salmon/index'
+include { SALMON_QUANT           } from '../modules/nf-core/salmon/quant'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -20,7 +22,12 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_comp
 workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    ch_samplesheet              // channel: samplesheet read in from --input
+    ch_genome_fasta             // channel: [ fasta ]
+    ch_transcript_fasta         // channel: [ transcript_fasta ]
+    ch_gtf                      // channel: [ gtf ]
+    //ch_salmon_index             // channel: [ meta, path(salmon/index/) ]
+    
     multiqc_config
     multiqc_logo
     multiqc_methods_description
@@ -43,6 +50,22 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     ch_multiqc_files = ch_multiqc_files.mix(
         TRIMGALORE.out.log.map { _meta, log -> log }
     )
+
+    //
+    // MODULE: Run Salmon
+    //
+    
+    SALMON_INDEX ( ch_transcript_fasta.combine(ch_genome_fasta).map { meta, tfa, gfa -> tuple(meta, tfa, gfa) } )
+    ch_salmon_index = SALMON_INDEX.out.index   
+
+    ch_index_bundle = ch_salmon_index
+        .combine(ch_gtf)
+        .map { meta, index, meta_gtf, gtf -> tuple(meta, index, gtf, []) }
+    // trailing [] stands in for transcript_fasta, unused in reads mode
+
+    SALMON_QUANT ( ch_samplesheet, ch_index_bundle )
+    ch_tpm = SALMON_QUANT.out.results          
+    
 
     //
     // Collate and save software versions
@@ -100,7 +123,8 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
         }
     )
     emit:multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    versions = ch_versions                                                              // channel: [ path(versions.yml) ]
+    tpm = ch_tpm                                                                        // channel: [ meta, path(quant.sf) ]
 }
 
 /*

@@ -50,6 +50,11 @@ workflow MGANSKE_COMPUTATIONAL_WORKFLOWS_PROJECT {
     //
     COMPUTATIONAL_WORKFLOWS_PROJECT (
         samplesheet,
+        
+        params.genome_fasta,
+        params.transcript_fasta,
+        params.gtf,
+        
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
