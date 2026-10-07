@@ -8,3 +8,9 @@ testing*
 *.pyc
 null/
 .lineage/
+assets/hisat2_index/
+results_real/
+results_test/
+work/
+.nextflow.log
+samplesheet_test.csv

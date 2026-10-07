@@ -7,6 +7,8 @@ include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
 include { HISAT2                 } from '../modules/nf-core/hisat2/main'
+include { SAMTOOLS_SORT          } from '../modules/nf-core/samtools/main'
+include { PICARD_MARKDUP         } from '../modules/nf-core/picard/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -41,9 +43,9 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     // MODULE: Run Trim Galore
     //
     TRIMGALORE( ch_samplesheet )
-    def ch_se_for_hisat2 = TRIMGALORE.out.reads_se.map { meta, fq -> [meta, fq, null] }
-    def ch_trimmed_reads = TRIMGALORE.out.reads_pe.mix(ch_se_for_hisat2)
-
+    def ch_se_for_hisat2 = TRIMGALORE.out.reads_se.map { meta, fq ->[meta + [single_end: true], fq, file('empty')]}
+    def ch_pe_for_hisat2 = TRIMGALORE.out.reads_pe.map { meta, fq1, fq2 ->[meta + [single_end: false], fq1, fq2]}
+    def ch_trimmed_reads = ch_pe_for_hisat2.mix(ch_se_for_hisat2)
     //
     // MODULE: Run HISAT2
     //
@@ -51,7 +53,18 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
         "${params.hisat2_index}/*.ht2"
     )
     HISAT2( ch_trimmed_reads, file("${params.hisat2_index}").parent, params.hisat2_cores ?: 1 )
-    
+
+    //
+    // SamtoolsSort: SAM==>BAM
+    //
+    SAMTOOLS_SORT( HISAT2.out.sam )
+
+    //
+    // Mark Duplicates: Picard
+    //
+    PICARD_MARKDUP( SAMTOOLS_SORT.out.bam )
+
+
     //
     // Collate and save software versions
     //
