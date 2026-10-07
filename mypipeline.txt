@@ -1,0 +1,36 @@
+
+nextflow.enable.dsl = 2
+
+/*
+ * Pipeline RNA-seq custom
+ */
+
+
+//Colonne obbligatorie: sample, fastq_1, fastq_2
+//Colonne opzionali: strandedness (default: 'reverse')
+
+
+/*
+Information	What it contains	Where it comes from
+Which samples	Unique identifiers	Samplesheet
+Where the FASTQ files are	Paths to the files	Samplesheet
+Which genome	Index / FASTA	Parameter
+Which annotation	GTF / GFF	Parameter
+Library type	Paired/single-end, strandedness	Samplesheet or parameter
+*/
+
+include { } from ''
+include { } from ''
+include { } from ''
+include { } from ''
+include { } from ''
+
+
+workflow {
+    //1. Quality Control	
+    //2. Adapter/Quality Trimming
+    //3. Allainment splice-aware
+    //4. Sorting/Indexing BAM
+    //5. Quantification
+    //6. MultiQC 
+}

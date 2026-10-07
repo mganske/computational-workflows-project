@@ -9,6 +9,7 @@ include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
 include { HISAT2                 } from '../modules/nf-core/hisat2/main'
 include { SAMTOOLS_SORT          } from '../modules/nf-core/samtools/main'
 include { PICARD_MARKDUP         } from '../modules/nf-core/picard/main'
+include { STRING_TIE             } from '../modules/nf-core/string_tie/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -64,6 +65,10 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     //
     PICARD_MARKDUP( SAMTOOLS_SORT.out.bam )
 
+    //
+    // Quantification: StringTie
+    //
+    STRING_TIE( PICARD_MARKDUP.out.bam, file(params.gtf) )
 
     //
     // Collate and save software versions

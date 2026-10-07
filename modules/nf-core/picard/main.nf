@@ -3,8 +3,8 @@ process PICARD_MARKDUP {
     label 'process_low'
 
 
-    container 'docker.io/broadinstitute/picard:latest'
-    
+    container 'community.wave.seqera.io/library/picard:3.5.0--d312a2f9bb99b1aa'
+
     input:
     tuple val(meta), path(sorted_bam)
 
@@ -19,7 +19,7 @@ process PICARD_MARKDUP {
     def args = task.ext.args ?: ''
 
     """
-    java -jar /usr/picard/picard.jar AddOrReplaceReadGroups \\
+    java -jar /opt/conda/share/picard-3.5.0-0/picard.jar AddOrReplaceReadGroups \\
         I=${sorted_bam} \\
         O=${meta.id}_rg.bam \\
         RGID=${meta.id} \\
@@ -29,7 +29,7 @@ process PICARD_MARKDUP {
         RGPU=${meta.id} \\
         CREATE_INDEX=true
 
-    java -jar /usr/picard/picard.jar MarkDuplicates \\
+    java -jar /opt/conda/share/picard-3.5.0-0/picard.jar MarkDuplicates \\
         I=${meta.id}_rg.bam \\
         O=${meta.id}_marked.bam \\
         M=${meta.id}_dup_metrics.txt \\
