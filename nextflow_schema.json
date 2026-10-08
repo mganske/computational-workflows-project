@@ -78,6 +78,47 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "default": "s3://ngi-igenomes/igenomes/"
+                },
+                "hisat2_index": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to HISAT2 index directory (base name without .ht2 extension).",
+                    "fa_icon": "fas fa-file-code",
+                    "help_text": "Path to the HISAT2 index files (without the .ht2 extension). Default uses mouse chr19 only. Use --hisat2_index to override or use the full_genome profile."
+                },
+                "hisat2_index_full": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to full mouse genome HISAT2 index.",
+                    "fa_icon": "fas fa-file-code",
+                    "hidden": true
+                },
+                "gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.gtf(\\.gz)?$",
+                    "description": "Path to GTF annotation file.",
+                    "fa_icon": "fas fa-file-code",
+                    "help_text": "Gene annotation file in GTF format used by StringTie for quantification."
+                },
+                "gtf_full": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.gtf(\\.gz)?$",
+                    "description": "Path to full mouse genome GTF annotation.",
+                    "fa_icon": "fas fa-file-code",
+                    "hidden": true
+                },
+                "hisat2_cores": {
+                    "type": "integer",
+                    "description": "Number of cores for HISAT2 alignment.",
+                    "fa_icon": "fas fa-microchip",
+                    "default": 2,
+                    "hidden": true
                 }
             }
         },
