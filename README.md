@@ -14,19 +14,19 @@
 
 ## Introduction
 
-**mganske/computational-workflows-project** is a bioinformatics pipeline that (<>)
-
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+**mganske/computational-workflows-project** is a bioinformatics pipeline or basic RNA-seq analysis of organisms with a reference genome and annotation. It takes a samplesheet with paired-end FASTQ files, a genome FASTA, a transcriptome FASTA and a GTF annotation as input. It performs quality control with FastQC, adapter and quality trimming with TrimGalore, transcript quantification with Salmon (transcriptome indexing plus mapping-based quantification, i.e. pseudo-alignment), genome alignment with HISAT2 and duplicate marking with Picard. It produces a gene expression table (TPM) per sample and a MultiQC report that aggregates the QC metrics.
 
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+2. Adapter and quality trimming (['TrimGalore](https://www.trimgalore.com))
+3. Alignment (['HISAT2'](https://ccb.jhu.edu/software/hisat2/index.shtml)) -> **NO QUANTIFICATION**
+4.Sort and index alignments (['SAMtools']( https://sourceforge.net/projects/samtools/files/samtools/))
+5. Duplicate read marking (['picard MarkDuplicates'(https://broadinstitute.github.io/picard/))
+6. Transcript assembly and quantification (['StringTie'](https://ccb.jhu.edu/software/stringtie/))
+7. Pseudoalignment and quantification (['Salmon'](https://combine-lab.github.io/salmon/))
+8. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
