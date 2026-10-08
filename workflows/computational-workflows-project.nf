@@ -60,7 +60,7 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
 
     ch_index_bundle = ch_salmon_index
         .combine(ch_gtf)
-        .map { meta, index, meta_gtf, gtf -> tuple(meta, index, gtf, []) }
+        .map { meta, index, gtf -> tuple(meta, index, gtf, []) }
     // trailing [] stands in for transcript_fasta, unused in reads mode
 
     SALMON_QUANT ( ch_samplesheet, ch_index_bundle )
