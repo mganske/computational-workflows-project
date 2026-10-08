@@ -27,7 +27,8 @@ include { getGenomeAttribute               } from './subworkflows/local/utils_nf
 // TODO nf-core: Remove this line if you don't need a FASTA file
 //   This is an example of how to use getGenomeAttribute() to fetch parameters
 //   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
+// params.fasta = getGenomeAttribute('fasta')
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,11 +46,18 @@ workflow MGANSKE_COMPUTATIONAL_WORKFLOWS_PROJECT {
 
     main:
 
+    ch_fasta            = channel.value(file(params.fasta, checkIfExists: true))
+    ch_transcript_fasta = channel.value([ [ id: 'transcriptome' ], file(params.transcript_fasta, checkIfExists: true) ])
+    ch_gtf              = channel.value(file(params.gtf, checkIfExists: true))
+    
     //
     // WORKFLOW: Run pipeline
     //
     COMPUTATIONAL_WORKFLOWS_PROJECT (
-        samplesheet,
+        samplesheet,        
+        ch_fasta,
+        ch_transcript_fasta,
+        ch_gtf,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,

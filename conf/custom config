@@ -1,5 +1,0 @@
-process {
-    withName: 'TRIMGALORE' {
-        cpus: 8
-    }
-}
