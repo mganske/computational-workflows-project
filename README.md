@@ -22,7 +22,7 @@
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Adapter and quality trimming (['TrimGalore](https://www.trimgalore.com))
 3. Alignment (['HISAT2'](https://ccb.jhu.edu/software/hisat2/index.shtml)) -> **NO QUANTIFICATION**
-4.Sort and index alignments (['SAMtools']( https://sourceforge.net/projects/samtools/files/samtools/))
+4. Sort and index alignments (['SAMtools']( https://sourceforge.net/projects/samtools/files/samtools/))
 5. Duplicate read marking (['picard MarkDuplicates'(https://broadinstitute.github.io/picard/))
 6. Transcript assembly and quantification (['StringTie'](https://ccb.jhu.edu/software/stringtie/))
 7. Pseudoalignment and quantification (['Salmon'](https://combine-lab.github.io/salmon/))
