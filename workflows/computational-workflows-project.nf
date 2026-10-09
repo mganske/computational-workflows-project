@@ -11,6 +11,8 @@ include { SALMON_QUANT              } from '../modules/nf-core/salmon/quant'
 include { HISAT2_EXTRACTSPLICESITES } from '../modules/nf-core/hisat2/extractsplicesites/main'
 include { HISAT2_BUILD              } from '../modules/nf-core/hisat2/build/main'
 include { HISAT2_ALIGN              } from '../modules/nf-core/hisat2/align/main'
+include { SAMTOOLS_SORT             } from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX            } from '../modules/nf-core/samtools/index/main'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -93,6 +95,17 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     )
     ch_bam = HISAT2_ALIGN.out.bam
 
+    //
+    // MODULE: Run samtools
+    //
+    SAMTOOLS_SORT (
+        HISAT2_ALIGN.out.bam,
+        channel.value([ [:], [], [] ]),   // [ meta2, fasta, fai ], intentionally empty for BAM output
+        'bai'
+    )
+    ch_sorted_bam = SAMTOOLS_SORT.out.bam
+
+    SAMTOOLS_INDEX ( ch_sorted_bam )
 
     //
     // Collate and save software versions
