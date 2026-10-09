@@ -3,15 +3,18 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { TRIMGALORE             } from '../modules/nf-core/trimgalore/main'
-include { SALMON_INDEX           } from '../modules/nf-core/salmon/index'
-include { SALMON_QUANT           } from '../modules/nf-core/salmon/quant'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_computational-workflows-project_pipeline'
+include { FASTQC                    } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                   } from '../modules/nf-core/multiqc/main'
+include { TRIMGALORE                } from '../modules/nf-core/trimgalore/main'
+include { SALMON_INDEX              } from '../modules/nf-core/salmon/index'
+include { SALMON_QUANT              } from '../modules/nf-core/salmon/quant'
+include { HISAT2_EXTRACTSPLICESITES } from '../modules/nf-core/hisat2/extractsplicesites/main'
+include { HISAT2_BUILD              } from '../modules/nf-core/hisat2/build/main'
+include { HISAT2_ALIGN              } from '../modules/nf-core/hisat2/align/main'
+include { paramsSummaryMap          } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_computational-workflows-project_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,9 +66,33 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
         .map { meta, index, gtf -> tuple(meta, index, gtf, []) }
     // trailing [] stands in for transcript_fasta, unused in reads mode
 
-    SALMON_QUANT ( ch_samplesheet, ch_index_bundle )
+    SALMON_QUANT ( TRIMGALORE.out.reads, ch_index_bundle )
     ch_tpm = SALMON_QUANT.out.results          
     
+    //
+    // MODULE: Run HISAT2
+    //
+
+    HISAT2_EXTRACTSPLICESITES ( ch_gtf.map { gtf -> tuple([ id: 'gtf' ], gtf) } )
+    ch_splicesites = HISAT2_EXTRACTSPLICESITES.out.txt
+
+    HISAT2_BUILD (
+        ch_genome_fasta
+            .combine(ch_gtf)
+            .combine(ch_splicesites.map { meta, ss -> ss })
+            .map { fasta, gtf, ss -> tuple([ id: 'genome' ], fasta, gtf, ss) },
+        params.hisat2_build_memory                           
+    )
+    ch_hisat2_index = HISAT2_BUILD.out.index
+
+    HISAT2_ALIGN (
+        TRIMGALORE.out.reads,                                
+        ch_hisat2_index.first(),                             
+        ch_splicesites,                              
+        false                                                
+    )
+    ch_bam = HISAT2_ALIGN.out.bam
+
 
     //
     // Collate and save software versions

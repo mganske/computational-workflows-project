@@ -252,6 +252,10 @@
         },
         "gtf": {
             "type": "string"
+        },
+        "hisat2_build_memory": {
+            "type": "string",
+            "default": "200.GB"
         }
     }
 }

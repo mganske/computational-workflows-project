@@ -34,7 +34,7 @@
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
 <!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+     Explain what rows and columns represent. For instance (please edit as appropriate):-->
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -47,11 +47,9 @@ CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
--->
+If you have many paired-end files, we provide a python script that creates the samplesheet. It requires pandas and expects paired end files in a "data" folder. It might work with single-end files, but use at your own risk!
 
 Now, you can run the pipeline using:
-
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
 nextflow run mganske/computational-workflows-project \
@@ -65,11 +63,7 @@ nextflow run mganske/computational-workflows-project \
 
 ## Credits
 
-mganske/computational-workflows-project was originally written by Marcus Ganske, Davide Bordiga.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+mganske/computational-workflows-project was originally written by Marcus Ganske & Davide Bordiga.
 
 ## Contributions and Support
 
