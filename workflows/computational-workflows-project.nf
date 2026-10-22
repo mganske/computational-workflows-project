@@ -15,6 +15,9 @@ include { SAMTOOLS_SORT             } from '../modules/nf-core/samtools/sort/mai
 include { SAMTOOLS_INDEX            } from '../modules/nf-core/samtools/index/main'
 include { PICARD_MARKDUPLICATES     } from '../modules/nf-core/picard/markduplicates/main'
 include { STRINGTIE_STRINGTIE       } from '../modules/nf-core/stringtie/stringtie/main'
+include { TXIMETA_TXIMPORT          } from '../modules/nf-core/tximeta/tximport/main'
+include { CUSTOM_TX2GENE            } from '../modules/nf-core/custom/tx2gene/main'
+include { GFFREAD                   } from '../modules/nf-core/gffread/main'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -54,15 +57,21 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     // MODULE: Run Trim Galore
     //
     TRIMGALORE( ch_samplesheet )
-    ch_multiqc_files = ch_multiqc_files.mix(
-        TRIMGALORE.out.log.map { _meta, log -> log }
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{ it[1] })
+
+    //
+    // MODULE: Run GFFRead
+    //
+    GFFREAD (
+        ch_gtf.map { gtf -> tuple([ id: 'transcriptome' ], gtf) },
+        ch_genome_fasta
     )
+    ch_transcript_fasta = GFFREAD.out.gffread_fasta                   // channel: [ meta, path(*.fasta) ]
 
     //
     // MODULE: Run Salmon
     //
-    
-    SALMON_INDEX ( ch_transcript_fasta.combine(ch_genome_fasta).map { meta, tfa, gfa -> tuple(meta, tfa, gfa) } )
+    SALMON_INDEX ( ch_transcript_fasta.combine(ch_genome_fasta) )
     ch_salmon_index = SALMON_INDEX.out.index   
 
     ch_index_bundle = ch_salmon_index
@@ -70,9 +79,16 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
         .map { meta, index, gtf -> tuple(meta, index, gtf, []) }
     // trailing [] stands in for transcript_fasta, unused in reads mode
 
-    SALMON_QUANT ( TRIMGALORE.out.reads, ch_index_bundle )
-    ch_tpm = SALMON_QUANT.out.results          
+    SALMON_QUANT ( TRIMGALORE.out.reads, ch_index_bundle.first() )
+    ch_tpm = SALMON_QUANT.out.results     
     
+    ch_salmon_dirs = SALMON_QUANT.out.results
+    .map { meta, dir -> dir }                            // drop the per-sample meta
+    .collect()                                           // gather all sample directories into one list
+    .map { dirs -> tuple([ id: 'all_samples' ], dirs) }
+
+    ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.results.collect{ it[1] })
+
     //
     // MODULE: Run HISAT2
     //
@@ -97,6 +113,8 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     )
     ch_bam = HISAT2_ALIGN.out.bam
 
+    ch_multiqc_files = ch_multiqc_files.mix(HISAT2_ALIGN.out.summary.collect{ it[1] })
+
     //
     // MODULE: Run samtools
     //
@@ -116,6 +134,7 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
         SAMTOOLS_SORT.out.bam,
         channel.value([ [:], [], [] ])          // [ meta2, fasta, fai ], intentionally empty
     )
+    ch_multiqc_files = ch_multiqc_files.mix(PICARD_MARKDUPLICATES.out.metrics.collect{ it[1] })
 
     //
     // MODULE: Run StringTie
@@ -124,6 +143,27 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
         SAMTOOLS_SORT.out.bam.map { meta, bam -> tuple(meta, bam, []) },
         'expression-estimation',
         ch_gtf
+    )
+
+    //
+    // MODULE: Run tx2gene
+    //
+    CUSTOM_TX2GENE (
+        ch_gtf.map { gtf -> tuple([ id: 'gtf' ], gtf) },
+        ch_salmon_dirs,
+        'salmon',
+        'gene_id',
+        'gene_name'
+    )
+    ch_tx2gene = CUSTOM_TX2GENE.out.tx2gene                  // channel: [ meta, path(*tx2gene.tsv) ]
+
+    //
+    // MODULE: Run TxImport
+    //
+    TXIMETA_TXIMPORT(
+        ch_salmon_dirs,
+        ch_tx2gene,
+        'salmon'
     )
 
     //
