@@ -14,6 +14,7 @@ include { HISAT2_ALIGN              } from '../modules/nf-core/hisat2/align/main
 include { SAMTOOLS_SORT             } from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX            } from '../modules/nf-core/samtools/index/main'
 include { PICARD_MARKDUPLICATES     } from '../modules/nf-core/picard/markduplicates/main'
+include { STRINGTIE_STRINGTIE       } from '../modules/nf-core/stringtie/stringtie/main'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -114,6 +115,15 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     PICARD_MARKDUPLICATES (
         SAMTOOLS_SORT.out.bam,
         channel.value([ [:], [], [] ])          // [ meta2, fasta, fai ], intentionally empty
+    )
+
+    //
+    // MODULE: Run StringTie
+    //
+    STRINGTIE_STRINGTIE (
+        SAMTOOLS_SORT.out.bam.map { meta, bam -> tuple(meta, bam, []) },
+        'expression-estimation',
+        ch_gtf
     )
 
     //
