@@ -22,12 +22,25 @@
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Adapter and quality trimming (['TrimGalore](https://www.trimgalore.com))
-3. Alignment (['HISAT2'](https://ccb.jhu.edu/software/hisat2/index.shtml)) -> **NO QUANTIFICATION**
-4. Sort and index alignments (['SAMtools']( https://sourceforge.net/projects/samtools/files/samtools/))
-5. Duplicate read marking (['picard MarkDuplicates'(https://broadinstitute.github.io/picard/))
-6. Transcript assembly and quantification (['StringTie'](https://ccb.jhu.edu/software/stringtie/))
-7. Pseudoalignment and quantification (['Salmon'](https://combine-lab.github.io/salmon/))
-8. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+3. Transcriptome preparation: [GFFREAD](https://github.com/gpertea/gffread) builds the transcript FASTA from the genome and GTF
+4. Genome alignment branch:
+     1. Index building and alignment ([HISAT2](https://daehwankimlab.github.io/hisat2/))
+     2. Sorting and indexing (['SAMtools']( https://www.htslib.org/))
+     3. Duplicate marking (['picard MarkDuplicates'(https://broadinstitute.github.io/picard/)), for QC only
+     4. Transcript quantification (['StringTie'](https://ccb.jhu.edu/software/stringtie/)), expression estimation against the GTF
+5. Quantification branch:
+     1. Index building and pseudo-alignment (['Salmon'](https://combine-lab.github.io/salmon/))
+     2. Gene-level merge ([tximport](https://bioconductor.org/packages/tximport/)) into one TPM table
+6. QC summary ([`MultiQC`](http://multiqc.info/)) for FastQC, HISAT2, Picard and Salmon
+
+## Requirements
+
+- Nextflow version 26.04.6
+- Docker with the daemon running, and internet access for the first container pulls.
+- Memory: 13 GB RAM. 
+- Disk: About 100 GB.
+- Python 3 with pandas, or the container command, for the optional samplesheet script.
+- Reference files: Ensembl release 102, GRCm38 (genome FASTA and GTF).
 
 ## Usage
 
@@ -43,19 +56,22 @@ First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv
 sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+SRX19144486,data/SRX19144486_SRR23195516_1.fastq.gz,data/SRX19144486_SRR23195516_2.fastq.gz
+SRX19144488,data/SRX19144488_SRR23195511_1.fastq.gz,data/SRX19144488_SRR23195511_2.fastq.gz
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
+Each row represents a fastq file (single-end) or a pair of fastq files (paired end). We only tested with paired-end reads.
 
 If you have many paired-end files, we provide a python script that creates the samplesheet. It requires pandas and expects paired end files in a "data" folder. It might work with single-end files, but use at your own risk!
 
 Now, you can run the pipeline using:
 
 ```bash
-nextflow run mganske/computational-workflows-project \
-   -profile <docker/singularity/.../institute> \
+nextflow run mganske/computational-workflows-project -r 1.0.0 \
+   -profile docker \
    --input samplesheet.csv \
+   --fasta <genome.fa> \
+   --gtf <annotation.gtf> \
    --outdir <OUTDIR>
 ```
 
