@@ -160,7 +160,7 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
-                [id: 'COMPUTATIONAL_WORKFLOWS_project'],
+                [id: 'COMPUTATIONAL_WORKFLOWS_PROJECT'],
                 files,
                 multiqc_config
                     ? file(multiqc_config, checkIfExists: true)
