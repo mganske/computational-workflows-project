@@ -21,16 +21,16 @@
 ![Metro Map Pipeline](https://raw.githubusercontent.com/mganske/computational-workflows-project/main/docs/images/metro_map.svg)
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Adapter and quality trimming (['TrimGalore](https://www.trimgalore.com))
-3. Transcriptome preparation: [GFFREAD](https://github.com/gpertea/gffread) builds the transcript FASTA from the genome and GTF
+2. Adapter and quality trimming ([`TrimGalore`](https://www.trimgalore.com))
+3. Transcriptome preparation: [`GFFREAD`](https://github.com/gpertea/gffread) builds the transcript FASTA from the genome and GTF
 4. Genome alignment branch:
-     1. Index building and alignment ([HISAT2](https://daehwankimlab.github.io/hisat2/))
-     2. Sorting and indexing (['SAMtools']( https://www.htslib.org/))
-     3. Duplicate marking (['picard MarkDuplicates'(https://broadinstitute.github.io/picard/)), for QC only
-     4. Transcript quantification (['StringTie'](https://ccb.jhu.edu/software/stringtie/)), expression estimation against the GTF
+     1. Index building and alignment ([`HISAT2`](https://daehwankimlab.github.io/hisat2/))
+     2. Sorting and indexing ([`SAMtools`]( https://www.htslib.org/))
+     3. Duplicate marking ([`picard MarkDuplicates`](https://broadinstitute.github.io/picard/)), for QC only
+     4. Transcript quantification ([`StringTie`](https://ccb.jhu.edu/software/stringtie/)), expression estimation against the GTF
 5. Quantification branch:
-     1. Index building and pseudo-alignment (['Salmon'](https://combine-lab.github.io/salmon/))
-     2. Gene-level merge ([tximport](https://bioconductor.org/packages/tximport/)) into one TPM table
+     1. Index building and pseudo-alignment ([`Salmon`](https://combine-lab.github.io/salmon/))
+     2. Gene-level merge ([`tximport`](https://bioconductor.org/packages/tximport/)) into one TPM table
 6. QC summary ([`MultiQC`](http://multiqc.info/)) for FastQC, HISAT2, Picard and Salmon
 
 ## Requirements
