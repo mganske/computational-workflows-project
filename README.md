@@ -18,7 +18,7 @@
 
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
-     ![https://github.com/mganske/computational-workflows-project/blob/main/docs/images/metro_map.svg](Metro Map of pipeline)
+     ![Metro Map Pipeline](https://github.com/mganske/computational-workflows-project/blob/main/docs/images/metro_map.svg)
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Adapter and quality trimming (['TrimGalore](https://www.trimgalore.com))
