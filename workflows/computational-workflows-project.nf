@@ -13,6 +13,7 @@ include { HISAT2_BUILD              } from '../modules/nf-core/hisat2/build/main
 include { HISAT2_ALIGN              } from '../modules/nf-core/hisat2/align/main'
 include { SAMTOOLS_SORT             } from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX            } from '../modules/nf-core/samtools/index/main'
+include { PICARD_MARKDUPLICATES     } from '../modules/nf-core/picard/markduplicates/main'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -106,6 +107,14 @@ workflow COMPUTATIONAL_WORKFLOWS_PROJECT {
     ch_sorted_bam = SAMTOOLS_SORT.out.bam
 
     SAMTOOLS_INDEX ( ch_sorted_bam )
+
+    //
+    // MODULE: Run Picard
+    //
+    PICARD_MARKDUPLICATES (
+        SAMTOOLS_SORT.out.bam,
+        channel.value([ [:], [], [] ])          // [ meta2, fasta, fai ], intentionally empty
+    )
 
     //
     // Collate and save software versions
