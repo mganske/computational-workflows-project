@@ -16,8 +16,6 @@
 
 **mganske/computational-workflows-project** is a bioinformatics pipeline or basic RNA-seq analysis of organisms with a reference genome and annotation. It takes a samplesheet with paired-end FASTQ files, a genome FASTA, a transcriptome FASTA and a GTF annotation as input. It performs quality control with FastQC, adapter and quality trimming with TrimGalore, transcript quantification with Salmon (transcriptome indexing plus mapping-based quantification, i.e. pseudo-alignment), genome alignment with HISAT2 and duplicate marking with Picard. It produces a gene expression table (TPM) per sample and a MultiQC report that aggregates the QC metrics.
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
 ![Metro Map Pipeline](https://raw.githubusercontent.com/mganske/computational-workflows-project/main/docs/images/metro_map.svg)
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
@@ -47,8 +45,6 @@
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):-->
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -71,6 +67,7 @@ nextflow run mganske/computational-workflows-project -r 1.0.0 \
    -profile docker \
    --input samplesheet.csv \
    --fasta <genome.fa> \
+   --transcript_fasta <transcript.fa> \
    --gtf <annotation.gtf> \
    --outdir <OUTDIR>
 ```
